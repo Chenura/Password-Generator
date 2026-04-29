@@ -1,0 +1,78 @@
+body {
+  margin: 0;
+  font-family: monospace;
+  background: black;
+  color: #00ff9f;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+}
+
+.container {
+  width: 350px;
+  padding: 20px;
+  border: 1px solid #00ff9f;
+  border-radius: 10px;
+  box-shadow: 0 0 15px #00ff9f;
+}
+
+h1 {
+  text-align: center;
+  font-size: 18px;
+}
+
+.output-box {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.output-box input {
+  flex: 1;
+  padding: 8px;
+  background: black;
+  color: #00ff9f;
+  border: 1px solid #00ff9f;
+}
+
+.output-box button {
+  background: #00ff9f;
+  border: none;
+  cursor: pointer;
+}
+
+.controls {
+  font-size: 14px;
+}
+
+.controls label {
+  display: block;
+  margin: 5px 0;
+}
+
+.btn {
+  width: 100%;
+  margin-top: 8px;
+  padding: 10px;
+  background: #00ff9f;
+  border: none;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.strength {
+  margin-top: 10px;
+  text-align: center;
+}
+
+#history {
+  max-height: 120px;
+  overflow-y: auto;
+  font-size: 12px;
+  background: #111;
+  padding: 5px;
+}
+
+#history li {
+  margin: 3px 0;
+}
