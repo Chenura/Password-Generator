@@ -10,14 +10,15 @@ const symbolsEl = document.getElementById("symbols");
 const strengthEl = document.getElementById("strength");
 const historyEl = document.getElementById("history");
 
-// Load history
+// 📜 Load history
 let history = JSON.parse(localStorage.getItem("pwHistory")) || [];
 
+// Slider update
 lengthEl.addEventListener("input", () => {
   lengthValue.innerText = lengthEl.value;
 });
 
-// 🔐 Secure password generator
+// 🔐 Generate password (secure)
 function generatePassword() {
   let chars = "";
   if (uppercaseEl.checked) chars += "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
@@ -25,9 +26,12 @@ function generatePassword() {
   if (numbersEl.checked) chars += "0123456789";
   if (symbolsEl.checked) chars += "!@#$%^&*()_+";
 
-  if (!chars) return alert("Select at least one option!");
+  if (!chars) {
+    alert("Select at least one option!");
+    return;
+  }
 
-  let array = new Uint32Array(lengthEl.value);
+  const array = new Uint32Array(lengthEl.value);
   window.crypto.getRandomValues(array);
 
   let password = "";
@@ -40,18 +44,25 @@ function generatePassword() {
   updateStrength(password);
 
   history.unshift(password);
-  history = history.slice(0, 15);
-  localStorage.setItem("pwHistory", JSON.stringify(history));
+  history = history.slice(0, 20);
 
+  localStorage.setItem("pwHistory", JSON.stringify(history));
   renderHistory();
 }
 
-// 📋 Copy
+// 📋 Copy single password
 function copyPassword() {
   navigator.clipboard.writeText(passwordEl.value);
+  alert("Copied!");
 }
 
-// 📊 Strength
+// 📋 Copy all passwords
+function copyAllPasswords() {
+  navigator.clipboard.writeText(history.join("\n"));
+  alert("All passwords copied!");
+}
+
+// 📊 Strength checker
 function updateStrength(pw) {
   let score = 0;
 
@@ -61,12 +72,13 @@ function updateStrength(pw) {
   if (/[!@#$%^&*]/.test(pw)) score++;
 
   const levels = ["Weak", "Medium", "Strong", "Very Strong"];
-  strengthEl.innerText = "Strength: " + levels[score - 1] || "Weak";
+  strengthEl.innerText = "Strength: " + (levels[score - 1] || "Weak");
 }
 
-// 📜 History UI
+// 📜 Render history
 function renderHistory() {
   historyEl.innerHTML = "";
+
   history.forEach(pw => {
     const li = document.createElement("li");
     li.innerText = pw;
@@ -74,16 +86,51 @@ function renderHistory() {
   });
 }
 
-// 📁 Download
+// 📁 Download with FULL fallback (Android-safe)
 function downloadPasswords() {
-  const blob = new Blob([history.join("\n")], { type: "text/plain" });
-  const a = document.createElement("a");
-  a.href = URL.createObjectURL(blob);
-  a.download = "passwords.txt";
-  a.click();
+  const content = history.join("\n");
+
+  try {
+    const blob = new Blob([content], { type: "text/plain;charset=utf-8" });
+    const url = URL.createObjectURL(blob);
+
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "passwords.txt";
+
+    // 🔥 Android fix
+    document.body.appendChild(a);
+    a.click();
+
+    setTimeout(() => {
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    }, 100);
+
+  } catch (err) {
+    fallbackDownload(content);
+  }
 }
 
-// 🎤 Voice
+// 🔁 Fallback method (works everywhere)
+function fallbackDownload(content) {
+  try {
+    // Option 1: open in new tab
+    const win = window.open();
+    if (win) {
+      win.document.write("<pre style='font-size:16px'>" + content + "</pre>");
+      alert("Long press → Save or Copy");
+    } else {
+      throw new Error("Popup blocked");
+    }
+  } catch (e) {
+    // Option 2: copy as last resort
+    navigator.clipboard.writeText(content);
+    alert("Download blocked. Content copied instead.");
+  }
+}
+
+// 🎤 Voice command
 function startVoice() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
@@ -108,5 +155,5 @@ function startVoice() {
   recognition.start();
 }
 
-// Init
+// INIT
 renderHistory();
