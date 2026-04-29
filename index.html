@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Cyber Password Generator</title>
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="container">
+  <h1>⚡ CYBER PASSWORD GENERATOR</h1>
+
+  <div class="output-box">
+    <input type="text" id="password" readonly>
+    <button onclick="copyPassword()">📋</button>
+  </div>
+
+  <div class="controls">
+    <label>Length: <span id="lengthValue">12</span></label>
+    <input type="range" id="length" min="6" max="40" value="12">
+
+    <label><input type="checkbox" id="uppercase" checked> Uppercase</label>
+    <label><input type="checkbox" id="lowercase" checked> Lowercase</label>
+    <label><input type="checkbox" id="numbers" checked> Numbers</label>
+    <label><input type="checkbox" id="symbols"> Symbols</label>
+  </div>
+
+  <button class="btn" onclick="generatePassword()">⚡ Generate</button>
+  <button class="btn" onclick="startVoice()">🎤 Voice</button>
+  <button class="btn" onclick="downloadPasswords()">⬇ Save</button>
+
+  <div class="strength" id="strength"></div>
+
+  <h3>History</h3>
+  <ul id="history"></ul>
+</div>
+
+<script src="script.js"></script>
+</body>
+</html>
